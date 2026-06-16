@@ -13,13 +13,9 @@ Targeted Match Analysis: Compares the structured candidate profile directly agai
 ## Tech Stack
 
 Framework: LangChain (LCEL)
-
 Data Validation: Pydantic
-
 PDF Parsing: PyMuPDF (fitz)
-
 Environment Management: python-dotenv
-
 Package Manager: uv (or standard pip)
 
 
