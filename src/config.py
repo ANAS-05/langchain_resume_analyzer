@@ -1,33 +1,23 @@
 import os
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain.chat_models import init_chat_model
 
-# Load environment variables from the .env file at the project root
 load_dotenv()
 
+
 class Config:
-    """Centralized configuration for the Candidate Match Analyzer."""
-    
-    # API Keys
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    
-    # LLM Settings
-    # We default to gpt-4o-mini as it offers an excellent balance of speed, cost, and reasoning.
     LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
-    
-    # Temperature 0 is crucial here. We want factual data extraction, not creative writing.
     LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.0"))
 
-def get_llm() -> ChatOpenAI:
-    """Instantiates and returns the configured LangChain Chat Model."""
-    if not Config.OPENAI_API_KEY:
+
+def get_llm():
+    if not (os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")):
         raise ValueError(
-            "OPENAI_API_KEY environment variable is missing. "
-            "Please ensure your .env file is set up correctly."
+            "No API key found. Set OPENAI_API_KEY or GEMINI_API_KEY in your .env file."
         )
-        
-    return ChatOpenAI(
+
+    return init_chat_model(
         model=Config.LLM_MODEL,
+        model_provider="google_genai",
         temperature=Config.LLM_TEMPERATURE,
-        api_key=Config.OPENAI_API_KEY
     )
